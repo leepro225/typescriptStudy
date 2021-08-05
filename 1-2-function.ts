@@ -45,4 +45,12 @@
         console.log(message);
     }
     printMessage();
+
+    // Rest parameter : 갯수와 상관없이 동일한 타입의 파라메터를 전달할때 사용
+    function addNumbers(...numbers: number[]): number {
+        return numbers.reduce((a, b) => a + b);
+    }
+    console.log(addNumbers(1, 2));
+    console.log(addNumbers(1, 2, 3, 4));
+    console.log(addNumbers(1, 2, 3, 4, 5, 6));
 }
