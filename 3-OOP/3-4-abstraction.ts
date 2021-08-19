@@ -13,8 +13,13 @@
     interface CoffeeMaker {
         makeCoffee(shots: number): CoffeeCup;
     }
+    interface CommercialCoffeeMaker {
+        makeCoffee(shots: number): CoffeeCup;
+        fillCoffeeBeans(beans:number): void;
+        clean(): void;
+    }
 
-    class CoffeeMachine {
+    class CoffeeMachine implements CoffeeMaker, CommercialCoffeeMaker {
         private coffeeBeans: number = 0; 
         private static BEANS_GRAMM_PER_SHOT: number = 7;
 
@@ -26,6 +31,11 @@
             return new CoffeeMachine(coffeeBeas);
         }
         
+
+        clean() {
+            console.log('cleaning the machine...');
+        }
+
         fillCoffeeBeans(beans: number) {
             if (beans < 0) {
                 throw new Error('value for beans should be greater than 0');
@@ -35,10 +45,10 @@
         
         private grindBeans(shots:number) {
             console.log(`grinding beans for ${shots}`);
-             if (this.coffeeBeans < shots * CoffeeMaker.BEANS_GRAMM_PER_SHOT) {
+             if (this.coffeeBeans < shots * CoffeeMachine.BEANS_GRAMM_PER_SHOT) {
                 throw new Error('Not enough coffee beans!')
             }
-            this.coffeeBeans -= shots * CoffeeMaker.BEANS_GRAMM_PER_SHOT; // 사용한 만큼 빼준다.
+            this.coffeeBeans -= shots * CoffeeMachine.BEANS_GRAMM_PER_SHOT; // 사용한 만큼 빼준다.
     
         }
         private preheat(): void {
@@ -72,9 +82,35 @@
     
     /**
      * 인터페이스는 내가 얼마만큼의 행동을 보장할 건지 결정할 수 있다.
+     * 인터페이스로 타입을 제한해서 받게 되면 인터페이스에서 정의된 아이들만 사용할 수 있다.
      */
-    const maker2: CoffeeMaker = CoffeeMachine.makeMachine(33);
+    const maker2: CommercialCoffeeMaker = CoffeeMachine.makeMachine(33);
     maker2.fillCoffeeBeans(4); // 인터페이스에 정의되어 있지 않기 때문에 쓸 수없다.
     maker2.makeCoffee(3);
+    maker2.clean();
+
+    class AmateurUser {
+        constructor(private machine: CoffeeMaker) {} 
+        makeCoffee() {
+            const coffee = this.machine.makeCoffee(2);
+        }
+    }
+
+    class ProBarista {
+        constructor(private machine: CommercialCoffeeMaker) {}
+        makeCoffee() {
+            const coffee = this.machine.makeCoffee(2);
+            this.machine.fillCoffeeBeans(5);
+            this.machine.clean();
+        }
+    }
+
+    const maker3: CoffeeMachine = CoffeeMachine.makeMachine(43);
+    const amateur = new AmateurUser(maker3);
+    const pro = new ProBarista(maker3);
+
+    amateur.makeCoffee();
+    pro.makeCoffee();
+
     
 }
