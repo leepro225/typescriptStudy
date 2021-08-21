@@ -37,7 +37,7 @@
              if (this.coffeeBeans < shots * CoffeeMachine.BEANS_GRAMM_PER_SHOT) {
                 throw new Error('Not enough coffee beans!')
             }
-            this.coffeeBeans -= shots * CoffeeMachine.BEANS_GRAMM_PER_SHOT; // 사용한 만큼 빼준다.
+            this.coffeeBeans -= shots * CoffeeMachine.BEANS_GRAMM_PER_SHOT;
     
         }
         private preheat(): void {
@@ -57,11 +57,7 @@
         }
     }
 
-    // 상속을 잘 이용하면, 부모함수의 것을 그대로 공통적인 기능은 재사용을 하면서
-    // 자식 클래스에서만 조금 더 자식 클래스의 특화된 기능을 할 수 있다.
     class CoffeeLatteMachine extends CoffeeMachine {
-        // 자식 클래스에서 전달인자를 사용하려면, 생성자를 만들고
-        // 부모의 생성자를 super를 이용해 부모에게 전달해준다.
         constructor(beans: number, serialNumber: string) {
             super(beans);
         }
@@ -70,9 +66,7 @@
             console.log('Steaming some milk...');
         }
 
-        // 자식 클래스에서 부모 클래스에서 구현된 것을 오버 라이팅한다.
         makeCoffee(shots: number): CoffeeCup {
-            // 부모의 함수를 자식에서 이용하려면 , super 라는 키워드를 이용해 쓸 수 있다.
             const coffee = super.makeCoffee(shots);
             this.steamMilk();
             return {
@@ -82,6 +76,7 @@
         }
     }
 
+    // 다형성을 이용하여, 한 가지의 클래스나 인터페이스를 통해 다른 방식으로 구현한 클래스를 만들 수 있다. 
     class SweetCoffeeMaker extends CoffeeMachine {
         constructor(beans: number) {
             super(beans)
@@ -96,8 +91,26 @@
         }
     }
 
-   const machine = new CoffeeMachine(23);
-    const latteMachine = new CoffeeLatteMachine(23, 'ddd');
-    const coffee = latteMachine.makeCoffee(1);
-    console.log(coffee);
+    /**
+     * 다형성이란, 하나의 인터페이스나 부모의 클래스를 상속한 자식 클래스들이
+     * 인터페이스와 부모클래스에 있는 함수들을 다른 방식으로 다양하게 구성함으로써 더 다양성을 띄게 하는 것을 말한다.
+     * 내부적으로 구현된 다양한 클래스들이 한 가지의 인터페이스를 구현하거나,
+     * 동일한 부모클래스를 상속했을 때 동일한 함수를 어떤 클래스인지 구분하지 않고
+     * 공통된 api 를 호출 할 수있다는 것이 큰 장점이다.
+    */
+
+    const machines: CoffeeMaker[] = [
+        new CoffeeMachine(16),
+        new CoffeeLatteMachine(16, '1'),
+        new SweetCoffeeMaker(16),
+        new CoffeeMachine(16),
+        new CoffeeLatteMachine(16, '1'),
+        new SweetCoffeeMaker(16)
+    ];
+
+    machines.forEach(machine => {
+        console.log('--------------------');
+        machine.makeCoffee(1);
+    })
+
 }
