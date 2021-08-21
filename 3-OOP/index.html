@@ -1,0 +1,20 @@
+<script>
+    const pass =  [[101, 1234], [102, 54321], [201,202], [202,1]];
+    const s = '101#1234#102#654321#51#203#201#202#1';
+    let arr = s.split('#');
+    for (let i = 0; i < pass.length; i++) {
+        console.log(pass[i])
+        if (pass[i][0] === arr[0] * 1) {
+            if (pass[i][1] === arr[1] * 1) {
+                console.log('통과');
+            }
+            arr.splice(0, 2);
+        } else {
+            arr.splice(0, 1);
+            if (pass[i][0] === arr[0] * 1) {
+                console.log('통과');
+                arr.splice(0, 2);
+            }
+        }
+    }
+</script>
